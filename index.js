@@ -4,6 +4,12 @@ canvas.height = window.innerHeight;
 console.log(canvas)
 var c = canvas.getContext('2d');
 
+var mouse = {x:undefined, y:undefined};
+document.addEventListener('mousemove', (event)=>{
+   mouse.x = event.x;
+   mouse.y = event.y;
+   console.log(mouse)
+})
 
 
 
@@ -20,7 +26,7 @@ function Circle (x,y,dx,dy,playerSize,color){
         c.beginPath();
         c.arc(this.x, this.y, this.playerSize, 0, Math.PI*2);
         c.fillStyle = this.color;
-        console.log(this.color)
+        // console.log(this.color)
         c.fill();
         c.closePath();
 
@@ -34,9 +40,16 @@ function Circle (x,y,dx,dy,playerSize,color){
                 this.dy = - this.dy;
                 // strobeLight();
                 }
-            // this.x += this.dx;
-            // this.y += this.dy;
-
+            this.x += this.dx;
+            this.y += this.dy;
+//MoveHover
+                if (mouse.x - this.x < 50 && mouse.x - this.x > -50 && mouse.y - this.y <50 && mouse.y - this.y > -50) {
+                    if(this.playerSize < 40){
+                      this.playerSize +=3;}
+                }
+                 else {
+                     if(this.playerSize > 6)this.playerSize--
+               }
             this.draw();
     }
 }
@@ -44,14 +57,14 @@ function Circle (x,y,dx,dy,playerSize,color){
 
 var ballArray = [];
 
-for (let i = 0; i < 100; i++) {
-    let playerSize= 30;
+for (let i = 0; i < 500; i++) {
+    let playerSize= Math.random()*6;
     let x = Math.random()*(canvas.width - playerSize*2)+playerSize;
     let y = Math.random()*(canvas.height - playerSize*2)+playerSize;
-    let dx = 5;
-    let dy =5;
+    let dx = Math.random() - .5;
+    let dy =Math.random() - .5;
    ballArray.push(new Circle(x,y,dx,dy,playerSize,getRndColor()));
-    console.log(ballArray)
+    // console.log(ballArray)
 }
 
 function animate (){
@@ -65,8 +78,8 @@ function animate (){
 
 function getRndColor() {
     var r = 255*Math.random()|0,
-        g = 255*Math.random()|0,
-        b = 255*Math.random()|0,
+        g = Math.random()|0,
+        b = 200*Math.random()|0,
         o = Math.random() + .1;
     return 'rgb(' + r + ',' + g + ',' + b + ','+o+')';
 }
