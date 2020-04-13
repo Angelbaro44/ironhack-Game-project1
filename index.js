@@ -14,127 +14,124 @@ document.addEventListener('mousemove', (event)=>{
 
 
 
-function Circle (x,y,dx,dy,playerSize,color){ 
-    this.x = x;
-    this.y = y;
-    this.dx = Math.random() * (dx * 3);
-    this.dy = Math.random() * (dy * 3)
-    this.playerSize = playerSize;
-    this.color = color
 
-    this.draw =function () {
-        c.beginPath();
-        c.arc(this.x, this.y, this.playerSize, 0, Math.PI*2);
-        c.fillStyle = this.color;
-        // console.log(this.color)
-        c.fill();
-        c.closePath();
-
-    }
-    this.update = function (){
-        if (this.x + this.playerSize >= canvas.width || this.x - this.playerSize < 0){
-            this.dx = -this.dx;
-            // strobeLight();
-            }
-        if (this.y >= canvas.height - this.playerSize || this.y - this.playerSize < 0){
-                this.dy = - this.dy;
-                // strobeLight();
-                }
-            this.x += this.dx;
-            this.y += this.dy;
-//MoveHover
-                if (mouse.x - this.x < 50 && mouse.x - this.x > -50 && mouse.y - this.y <50 && mouse.y - this.y > -50) {
-                    if(this.playerSize < 40){
-                      this.playerSize +=3;}
-                }
-                 else {
-                     if(this.playerSize > 6)this.playerSize--
-               }
-            this.draw();
-    }
-}
 
 
 var ballArray = [];
-
-for (let i = 0; i < 500; i++) {
-    let playerSize= Math.random()*6;
+function init(params) {
+for (let i = 0; i < 200; i++) {
+    let playerSize= (Math.random()+.3)*6;
+    // let playerSize = 70;
     let x = Math.random()*(canvas.width - playerSize*2)+playerSize;
     let y = Math.random()*(canvas.height - playerSize*2)+playerSize;
     let dx = Math.random() - .5;
     let dy =Math.random() - .5;
-   ballArray.push(new Circle(x,y,dx,dy,playerSize,getRndColor()));
-    // console.log(ballArray)
+
+if (i !== 0) {
+    for (let j = 0; j < ballArray.length; j++) {
+        // console.log(collision(x,y,ballArray[j].x,ballArray[j].y) - playerSize * 2 )
+        // console.log(playerSize)
+        if (collision(x,y,ballArray[j].x,ballArray[j].y) - (playerSize * 3) < 5) {
+             x = Math.random()*(canvas.width - playerSize*2)+playerSize;
+             y = Math.random()*(canvas.height - playerSize*2)+playerSize;
+             j = -1 
+
+        }
+        
+    }
+    
+}
+
+   ballArray.push(new Circle(x,y,dx,dy,playerSize,getRndColor(),ballArray,collision));
+   
+}
+}
+
+function safeZone (){
+    c.beginPath();
+    c.arc(canvas.width/2, canvas.height/2, 100, 0, Math.PI*2);
+    c.strokeStyle = this.color;
+    // console.log(this.color)
+    c.stroke();
+    c.closePath();
 }
 
 function animate (){
- requestAnimationFrame(animate)
- c.clearRect(0,0,canvas.width,canvas.height);
- for (let i = 0; i < ballArray.length; i++) {
-     ballArray[i].update();
-     
- }
+  requestAnimationFrame(animate)
+  c.clearRect(0,0,canvas.width,canvas.height);
+ballArray.forEach(ball => {
+    ball.update();
+}); 
+safeZone()}
+
+function collision (x1,y1,x2,y2) {
+    let xDistance = x2-x1;
+    let yDistance = y2-y1; 
+    return Math.sqrt(Math.pow(xDistance,2)) + Math.sqrt(Math.pow(yDistance,2))
+
 }
 
 function getRndColor() {
     var r = 255*Math.random()|0,
         g = Math.random()|0,
-        b = 200*Math.random()|0,
-        o = Math.random() + .1;
+        b = 255*Math.random()|0,
+        o = Math.random() + .4;
     return 'rgb(' + r + ',' + g + ',' + b + ','+o+')';
 }
-animate()
+safeZone();
+init();
+animate();
 
 
-function strobeLight () {
-    c.beginPath
-    c.fillStyle='rgba(0,0,0,.5)'
-    c.fillRect(0,0,canvas.width,canvas.height)
-    c.closePath
-    let x = Math.random() * canvas.width;
-    let y = Math.random() * canvas.height;
+// function strobeLight () {
+//     c.beginPath
+//     c.fillStyle='rgba(0,0,0,.5)'
+//     c.fillRect(0,0,canvas.width,canvas.height)
+//     c.closePath
+//     let x = Math.random() * canvas.width;
+//     let y = Math.random() * canvas.height;
   
-    for(let i =0; i<50; i++){
-                c.beginPath
-                c.fillStyle ='rgba(255,0,0,.4)';
-                c.fillRect(x,y,100,100);
-                c.stroke();
-                c.closePath
-            }
-            for(let i =0; i<30; i++){
-                let x = Math.random() * canvas.width;
-                let y = Math.random() * canvas.height;
-                    c.beginPath
-                    c.fillStyle = 'rgba(0,255,0,.4)';
-                    c.fillRect(x,y,100,100);
-                    c.stroke();
-                    c.closePath
-                }
-                for(let i =0; i<30; i++){
-                    let x = Math.random() * canvas.width;
-                    let y = Math.random() * canvas.height;
-                        c.beginPath
-                        c.fillStyle = 'rgba(0,0,255,.4)';
-                        c.fillRect(x,y,100,100);
-                        c.stroke();
-                        c.closePath
-                    }
-                    for(let i =0; i<30; i++){
-                        let x = Math.random() * canvas.width;
-                        let y = Math.random() * canvas.height;
-                            c.beginPath
-                            c.fillStyle = 'rgba(255,255,255,1';
-                            c.fillRect(x,y,50,50);
-                            c.stroke();
-                            c.closePath
-                        }
-                        for(let i =0; i<50; i++){
-                            let x = Math.random() * canvas.width;
-                            let y = Math.random() * canvas.height;
-                                c.beginPath
-                                c.fillStyle = 'rgba(0,0,0,.3';
-                                c.fillRect(x,y,25,25);
-                                c.stroke();
-                                c.closePath
-                            }
-                        }
+//     for(let i =0; i<50; i++){
+//                 c.beginPath
+//                 c.fillStyle ='rgba(255,0,0,.4)';
+//                 c.fillRect(x,y,100,100);
+//                 c.stroke();
+//                 c.closePath
+//             }
+//             for(let i =0; i<30; i++){
+//                 let x = Math.random() * canvas.width;
+//                 let y = Math.random() * canvas.height;
+//                     c.beginPath
+//                     c.fillStyle = 'rgba(0,255,0,.4)';
+//                     c.fillRect(x,y,100,100);
+//                     c.stroke();
+//                     c.closePath
+//                 }
+//                 for(let i =0; i<30; i++){
+//                     let x = Math.random() * canvas.width;
+//                     let y = Math.random() * canvas.height;
+//                         c.beginPath
+//                         c.fillStyle = 'rgba(0,0,255,.4)';
+//                         c.fillRect(x,y,100,100);
+//                         c.stroke();
+//                         c.closePath
+//                     }
+//                     for(let i =0; i<30; i++){
+//                         let x = Math.random() * canvas.width;
+//                         let y = Math.random() * canvas.height;
+//                             c.beginPath
+//                             c.fillStyle = 'rgba(255,255,255,1';
+//                             c.fillRect(x,y,50,50);
+//                             c.stroke();
+//                             c.closePath
+//                         }
+//                         for(let i =0; i<50; i++){
+//                             let x = Math.random() * canvas.width;
+//                             let y = Math.random() * canvas.height;
+//                                 c.beginPath
+//                                 c.fillStyle = 'rgba(0,0,0,.3';
+//                                 c.fillRect(x,y,25,25);
+//                                 c.stroke();
+//                                 c.closePath
+//                             }
+                        // }

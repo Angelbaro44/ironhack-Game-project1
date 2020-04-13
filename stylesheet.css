@@ -1,6 +1,14 @@
+
+
+
+
+
 canvas {
-        border: 1px solid red;
-background-color: #123244;
+        border: 3px solid rgb(95, 53, 53);
+background-color: #15031f;
+align-self: center;
+justify-self: center;
+margin: 20px;
 }
 body{
     margin: 0;
