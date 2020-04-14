@@ -4,12 +4,12 @@ canvas.height = window.innerHeight;
 console.log(canvas)
 var c = canvas.getContext('2d');
 
-var mouse = { x: undefined, y: undefined };
-document.addEventListener('mousemove', (event) => {
-    mouse.x = event.x;
-    mouse.y = event.y;
-    console.log(mouse)
-})
+// var mouse = { x: undefined, y: undefined };
+// document.addEventListener('mousemove', (event) => {
+//     mouse.x = event.x;
+//     mouse.y = event.y;
+//     console.log(mouse)
+// })
 
 
 
@@ -21,19 +21,19 @@ var ballArray = [];
 const safeZone = new Safespace(canvas.width / 2, canvas.height / 2, 0, 0, 100, getRndColor(), ballArray, collision)
 ballArray.push(safeZone)
 function init(params) {
-    for (let i = 0; i < 50; i++) {
-         let playerSize = (Math.random() + .3) * 6;
-        // let playerSize = 20;
+    for (let i = 0; i < 20; i++) {
+        // let playerSize = (Math.random() + .3) * 6;
+        let playerSize = 20;
         let x = Math.random() * (canvas.width - playerSize * 2) + playerSize;
         let y = Math.random() * (canvas.height - playerSize * 2) + playerSize;
-        let dx = Math.random() - .5;
-        let dy = Math.random() - .5;
+        let dx = Math.random()  * 1.5;
+        let dy = Math.random() * 1.5;
 
         if (i !== 0) {
             for (let j = 0; j < ballArray.length; j++) {
-                // console.log(collision(x,y,ballArray[j].x,ballArray[j].y) - playerSize * 2 )
-                // console.log(playerSize)
-                if (collision(x, y, ballArray[j].x, ballArray[j].y) - (playerSize * 3) < 5) {
+                console.log(collision(x,y,ballArray[j].x,ballArray[j].y) - playerSize * 2 )
+                console.log(playerSize)
+                if (collision(x, y, ballArray[j].x, ballArray[j].y, playerSize, ballArray[j].playerSize)) {
                     x = Math.random() * (canvas.width - playerSize * 2) + playerSize;
                     y = Math.random() * (canvas.height - playerSize * 2) + playerSize;
                     j = -1
@@ -48,30 +48,33 @@ function init(params) {
     }
 }
 
-// function safeZone (){
-//     c.beginPath();
-//     c.arc(canvas.width/2, canvas.height/2, 100, 0, Math.PI*2);
-//     c.strokeStyle = this.color;
-//     // console.log(this.color)
-//     c.stroke();
-//     c.closePath();
-// }
-
 function animate() {
     requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height);
-    ballArray.forEach(ball => {
-       ball.update();
+    ballArray.forEach((ball, ind) => {
+        ball.update()
+        for(let i=ind+1; i < ballArray.length; i++) {
+            if (collision(ball.x, ball.y, ballArray[i].x, ballArray[i].y, ball.playerSize, ballArray[i].playerSize) === true) {
+                ball.dx = -ball.dx;
+                ball.dy = -ball.dy;
+                ballArray[i].dx = -ballArray[i].dx;
+                ballArray[i].dy = -ballArray[i].dy;
+
+            }
+        }
     });
-    //safeZone.update()
+    // safeZone.update()
     // safeZone()
     // strobeLight();
 }
-function collision(x1, y1, x2, y2) {
+//(x2-x1)**2 + (y2-y1)**2 <= (r2+r1)**2
+
+function collision(x1, y1, x2, y2, r1, r2) {
     let xDistance = x2 - x1;
     let yDistance = y2 - y1;
-    return Math.sqrt(Math.pow(xDistance, 2)) + Math.sqrt(Math.pow(yDistance, 2))
-
+    // console.log((xDistance ** 2) + (yDistance ** 2) + (r2+r1))
+    // return ((xDistance ** 2) + (yDistance ** 2) + (r2+r1))
+    return ((xDistance ** 2) + (yDistance ** 2) <= (r2+r1)**2)
 }
 
 function getRndColor() {

@@ -4,11 +4,13 @@
 
 
 canvas {
-        border: 3px solid rgb(95, 53, 53);
-background-color: #15031f;
+        border: 3px solid rgb(165, 97, 97);
+background-color: #0000008c;
 align-self: center;
 justify-self: center;
-margin: 20px;
+margin: 0;
+transition: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+;
 }
 body{
     margin: 0;
